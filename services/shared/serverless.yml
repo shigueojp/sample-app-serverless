@@ -43,8 +43,13 @@ functions:
      - http:
          path: hello
          method: get
+        #  Versão alto level não funciona para shared lambda auth
+        #  authorizer:
+        #    authorizerFunc
          authorizer:
-           authorizerFunc
+          type: CUSTOM
+          authorizerId:
+            Ref: Authorizer
 resources:
   # # API Gateway Errors
   # - ${file(resources/api-gateway-errors.yml)}
@@ -84,7 +89,7 @@ resources:
         Value:
           Ref: Authorizer
         Export:
-          Name: ${self:custom.sstApp}-ExtAuthorizerId
+          Name: ${self:custom.sstApp}-ExtLambdaAuthorizerId
 
       # Para compartilhar o API GTW é necessário exportar as 2 ref abaixos
       ApiGatewayRestApiId:
@@ -92,7 +97,7 @@ resources:
         # ApiGatewayRestApi is a ref from serverless framework
           Ref: ApiGatewayRestApi
         Export:
-          Name: ${self:custom.stage}-ExtApiGatewayRestApiId
+          Name: ${self:custom.sstApp}-ExtApiGatewayRestApiId
     
       ApiGatewayRestApiRootResourceId:
         Value:
@@ -100,7 +105,7 @@ resources:
             - ApiGatewayRestApi
             - RootResourceId 
         Export:
-          Name: ${self:custom.stage}-ExtApiGatewayRestApiRootResourceId
+          Name: ${self:custom.sstApp}-ExtApiGatewayRestApiRootResourceId
 
 
 

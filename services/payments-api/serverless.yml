@@ -22,7 +22,7 @@ provider:
   # under process.env.
   environment:
     stage: ${self:custom.stage}
-    #sstApp: dev-SampleApp-payments
+    # sstApp: dev-SampleApp-payments
     tableName: !ImportValue ${self:custom.sstApp}-payments-ExtTableName
 
   iamRoleStatements:
@@ -41,6 +41,12 @@ provider:
       Resource:
         - !ImportValue ${self:custom.sstApp}-payments-ExtTableArn
 
+# Referenciando o API Gateway de SHARED Folder
+  apiGateway:
+    restApiId:
+      Fn::ImportValue: ${self:custom.sstApp}-ExtApiGatewayRestApiId
+    restApiRootResourceId:
+      Fn::ImportValue: ${self:custom.sstApp}-ExtApiGatewayRestApiRootResourceId
 functions:
   # Defines an HTTP API endpoint that calls the main function in create.js
   # - path: url path is /payments
@@ -117,25 +123,21 @@ functions:
   #         # authorizer: aws_iam
   #         authorizer: authorizerFunc
 
-resources:
-  # API Gateway Errors
-  - ${file(resources/api-gateway-errors.yml)}
-  # Cognito Identity Pool Policy
-  - ${file(resources/cognito-policy.yml)}
+# resources:
 
-  - Outputs:
-      ApiGatewayRestApiId:
-        Value:
-        # ApiGatewayRestApi is a ref from serverless framework
-          Ref: ApiGatewayRestApi
-        Export:
-          Name: ${self:custom.stage}-ExtApiGatewayRestApiId
+  # - Outputs:
+  #     ApiGatewayRestApiId:
+  #       Value:
+  #       # ApiGatewayRestApi is a ref from serverless framework
+  #         Ref: ApiGatewayRestApi
+  #       Export:
+  #         Name: ${self:custom.sstApp}-ExtApiGatewayRestApiId
     
-      ApiGatewayRestApiRootResourceId:
-        Value:
-           Fn::GetAtt:
-            - ApiGatewayRestApi
-            - RootResourceId 
-        Export:
-          Name: ${self:custom.stage}-ExtApiGatewayRestApiRootResourceId
+  #     ApiGatewayRestApiRootResourceId:
+  #       Value:
+  #          Fn::GetAtt:
+  #           - ApiGatewayRestApi
+  #           - RootResourceId 
+  #       Export:
+  #         Name: ${self:custom.sstApp}-ExtApiGatewayRestApiRootResourceId
 
