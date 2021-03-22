@@ -64,7 +64,7 @@ functions:
           # Lambda authorizer all the way
           # authorizer: aws_iam
           authorizer: 
-            type: COGNITO_USER_POOLS
+            type: CUSTOM
             authorizerId: !ImportValue ${self:custom.sstApp}-ExtLambdaAuthorizerId
 
   # get:
