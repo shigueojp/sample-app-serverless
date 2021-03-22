@@ -1,0 +1,20 @@
+custom:
+  # Our stage is based on what is passed in when running serverless
+  # commands. Or falls back to what we have set in the provider section.
+
+
+  # Pega o stage do CLI sls deploy --stage qa ou o próprop provider.stage dado em cada /services/X
+  stage: ${opt:stage, self:provider.stage}
+  sstAppMapping:
+    prod: prod
+    dev: dev
+  #dev-notes-ext-infra-ExtCognitoAuthRole
+  #devSampleApp-SampleStackcognito2E147779-ExtCognitoAuthRole
+  sstApp: ${self:custom.sstAppMapping.${self:custom.stage}, self:custom.sstAppMapping.dev}-SampleApp
+
+lambdaPolicyXRay:
+  Effect: Allow
+  Action:
+    - xray:PutTraceSegments
+    - xray:PutTelemetryRecords
+  Resource: "*"

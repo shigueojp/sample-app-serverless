@@ -1,0 +1,16 @@
+{
+  "name": "notes-app-ext-payments",
+  "version": "1.0.0",
+  "description": "",
+  "main": "create.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy:dev": "serverless deploy --aws-profile awsvs+ct-dev-Admin-sso"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^3.3.3"
+  }
+}

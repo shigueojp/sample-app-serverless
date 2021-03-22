@@ -1,0 +1,91 @@
+service: sample-app-ext-apigtw-lambda-auth
+
+plugins:
+  # Só permite uso do ES6, comentado por questões de bug
+  # - serverless-bundle
+  - serverless-offline
+
+custom: ${file(../../serverless.common.yml):custom}
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: dev
+  region: us-east-1
+  tracing:
+    apiGateway: true
+    lambda: true
+
+  # These environment variables are made available to our functions
+  # under process.env.
+  environment:
+    stage: ${self:custom.stage}
+    # https://cognito-idp.<user pool id>
+    COGNITO_ENDPOINT: !Sub https://cognito-idp.${AWS::Region}.amazonaws.com/us-east-1_l0AGDjmRT
+    #sstApp: dev-SampleApp-payments
+  #   tableName: !ImportValue ${self:custom.sstApp}-payments-ExtTableName
+
+  # apiGateway:
+  #   restApiId: !ImportValue ${self:custom.stage}-ExtApiGatewayRestApiId
+  #   restApiRootResourceId: !ImportValue ${self:custom.stage}-ExtApiGatewayRestApiRootResourceId
+
+functions:
+  authorizerFunc:
+    handler: auth.authorize
+
+  hello:
+   handler: auth.handler
+   events:
+     - http:
+         path: hello
+         method: get
+         authorizer:
+           authorizerFunc
+# # resources:
+# #   # # API Gateway Errors
+# #   # - ${file(resources/api-gateway-errors.yml)}
+# #   # # Cognito Identity Pool Policy
+# #   # - ${file(resources/cognito-policy.yml)}
+# #   Resources:
+# #     AuthorizerPermission:
+# #       Type: AWS::Lambda::Permission
+# #       Properties:
+# #         FunctionName:
+# #             Fn::GetAtt: authorizerFunc.Arn
+# #         Action: lambda:InvokeFunction
+# #         Principal:
+# #           Fn::Join: ["",["apigateway.", { Ref: "AWS::URLSuffix"}]]
+#   #   Authorizer:
+#   #     DependsOn:
+#   #       - ApiGatewayRestApi
+#   #     Type: AWS::ApiGateway::Authorizer
+#   #     Properties: 
+#   #       Name: ${self:provider.stage}-Authorizer
+#   #       RestApiId: { "Ref" : "ApiGatewayRestApi" }
+#   #       Type: TOKEN
+#   #       IdentitySource: method.request.header.Authorization
+#   #       AuthorizerResultTtlInSeconds: 300
+#   #       AuthorizerUri:
+#   #         Fn::Join:
+#   #           - ''
+#   #           - 
+#   #             - 'arn:aws:apigateway:'
+#   #             - Ref: "AWS::Region"
+#   #             - ':lambda:path/2015-03-31/functions/'
+#   #             - Fn::GetAtt: "authorizerFuncLambdaFunction.Arn"
+#   #             - "/invocations"
+#   # Outputs:
+#   # # Export via SLS Framework must have <functionNameLambdaFunctionQualifiedArn>
+#   #     AuthorizerId:
+#   #       Value:
+#   #         Ref: Authorizer
+#   #       Export:
+#   #         Name: ${self:custom.sstApp}-ExtAuthorizerId
+
+
+
+

@@ -1,0 +1,14 @@
+{
+  "name": "notes-app-ext-payment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "payment.js",
+  "scripts": {
+    "test": "../../node_modules/.bin/serverless-bundle test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "stripe": "^7.9.1"
+  }
+}
