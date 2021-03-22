@@ -72,9 +72,9 @@ module.exports.authorize = (event, context, cb) => {
 
 module.exports.handler = (event, context, cb) => {
   console.log("EVENT: \n" + JSON.stringify(event, null, 2))
-  return {
+  cb(null, {
     'statusCode': 200,
     'headers': {'Content-Type': 'application/json'},
-    'body': json.dumps('Nice!')
-}
+    'body': JSON.stringify({'teste': 'teste'})
+  })
 }
