@@ -45,12 +45,12 @@ functions:
          method: get
          authorizer:
            authorizerFunc
-# # resources:
-# #   # # API Gateway Errors
-# #   # - ${file(resources/api-gateway-errors.yml)}
-# #   # # Cognito Identity Pool Policy
-# #   # - ${file(resources/cognito-policy.yml)}
-# #   Resources:
+resources:
+  # # API Gateway Errors
+  # - ${file(resources/api-gateway-errors.yml)}
+  # Cognito Identity Pool Policy
+  # - ${file(resources/cognito-policy.yml)}
+  Resources:
 # #     AuthorizerPermission:
 # #       Type: AWS::Lambda::Permission
 # #       Properties:
@@ -59,32 +59,48 @@ functions:
 # #         Action: lambda:InvokeFunction
 # #         Principal:
 # #           Fn::Join: ["",["apigateway.", { Ref: "AWS::URLSuffix"}]]
-#   #   Authorizer:
-#   #     DependsOn:
-#   #       - ApiGatewayRestApi
-#   #     Type: AWS::ApiGateway::Authorizer
-#   #     Properties: 
-#   #       Name: ${self:provider.stage}-Authorizer
-#   #       RestApiId: { "Ref" : "ApiGatewayRestApi" }
-#   #       Type: TOKEN
-#   #       IdentitySource: method.request.header.Authorization
-#   #       AuthorizerResultTtlInSeconds: 300
-#   #       AuthorizerUri:
-#   #         Fn::Join:
-#   #           - ''
-#   #           - 
-#   #             - 'arn:aws:apigateway:'
-#   #             - Ref: "AWS::Region"
-#   #             - ':lambda:path/2015-03-31/functions/'
-#   #             - Fn::GetAtt: "authorizerFuncLambdaFunction.Arn"
-#   #             - "/invocations"
-#   # Outputs:
-#   # # Export via SLS Framework must have <functionNameLambdaFunctionQualifiedArn>
-#   #     AuthorizerId:
-#   #       Value:
-#   #         Ref: Authorizer
-#   #       Export:
-#   #         Name: ${self:custom.sstApp}-ExtAuthorizerId
+    Authorizer:
+      DependsOn:
+        - ApiGatewayRestApi
+      Type: AWS::ApiGateway::Authorizer
+      Properties: 
+        Name: ${self:provider.stage}-Authorizer
+        RestApiId: { "Ref" : "ApiGatewayRestApi" }
+        Type: TOKEN
+        IdentitySource: method.request.header.Authorization
+        AuthorizerResultTtlInSeconds: 300
+        AuthorizerUri:
+          Fn::Join:
+            - ''
+            - 
+              - 'arn:aws:apigateway:'
+              - Ref: "AWS::Region"
+              - ':lambda:path/2015-03-31/functions/'
+              - Fn::GetAtt: "AuthorizerFuncLambdaFunction.Arn"
+              - "/invocations"
+  Outputs:
+  # Export via SLS Framework must have <functionNameLambdaFunctionQualifiedArn>
+      AuthorizerId:
+        Value:
+          Ref: Authorizer
+        Export:
+          Name: ${self:custom.sstApp}-ExtAuthorizerId
+
+      # Para compartilhar o API GTW é necessário exportar as 2 ref abaixos
+      ApiGatewayRestApiId:
+        Value:
+        # ApiGatewayRestApi is a ref from serverless framework
+          Ref: ApiGatewayRestApi
+        Export:
+          Name: ${self:custom.stage}-ExtApiGatewayRestApiId
+    
+      ApiGatewayRestApiRootResourceId:
+        Value:
+           Fn::GetAtt:
+            - ApiGatewayRestApi
+            - RootResourceId 
+        Export:
+          Name: ${self:custom.stage}-ExtApiGatewayRestApiRootResourceId
 
 
 
