@@ -4,11 +4,16 @@ import { success, failure } from "../../libs/response-lib";
 
 export async function main(event, context) {
   const data = JSON.parse(event.body);
+  console.log(data);
+  console.log('----------');
+  console.log(event);
+  console.log(context);
   const params = {
     TableName: process.env.tableName,
     Item: {
-      userId: event.requestContext.identity.cognitoIdentityId,
-      noteId: uuid.v1(),
+      // Pegar o userID do Cognito
+      userId: event.requestContext.authorizer.principalId,
+      paymentId: uuid.v1(),
       content: data.content,
       attachment: data.attachment,
       createdAt: Date.now()

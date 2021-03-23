@@ -44,6 +44,9 @@ functions:
          path: hello
          method: get
         #  Versão alto level não funciona para shared lambda auth
+        #  Fazer manualmente:
+          #  É necessário criar AWS::Lambda::Permission para o API GATEWAY ter acesso
+          #  Criar AWS::ApiGateway::Authorizer
         #  authorizer:
         #    authorizerFunc
          authorizer:
@@ -56,14 +59,17 @@ resources:
   # Cognito Identity Pool Policy
   # - ${file(resources/cognito-policy.yml)}
   Resources:
-# #     AuthorizerPermission:
-# #       Type: AWS::Lambda::Permission
-# #       Properties:
-# #         FunctionName:
-# #             Fn::GetAtt: authorizerFunc.Arn
-# #         Action: lambda:InvokeFunction
-# #         Principal:
-# #           Fn::Join: ["",["apigateway.", { Ref: "AWS::URLSuffix"}]]
+    # Permissão para o API GTW ter acesso ao lambda 
+    AuthorizerPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName:
+          # <NomeFunc>LambdaFunction.Arn
+            Fn::GetAtt: AuthorizerFuncLambdaFunction.Arn
+        Action: lambda:InvokeFunction
+        Principal:
+          Fn::Join: ["",["apigateway.", { Ref: "AWS::URLSuffix"}]]
+
     Authorizer:
       DependsOn:
         - ApiGatewayRestApi
