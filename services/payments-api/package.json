@@ -5,7 +5,8 @@
   "main": "create.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy:dev": "serverless deploy --aws-profile awsvs+ct-dev-Admin-sso"
+    "deploy:dev": "serverless deploy --aws-profile AWSAdministratorAccess-959535651863",
+    "deploy:prod": "serverless deploy --stage prod --aws-profile AWSAdministratorAccess-177080657532"
   },
   "keywords": [],
   "author": "",

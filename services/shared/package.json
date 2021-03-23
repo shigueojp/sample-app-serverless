@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Authorize API Gateway REST API with Cognito or Auth0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy:dev": "serverless deploy --aws-profile AWSAdministratorAccess-959535651863",
+    "deploy:prod": "serverless deploy --stage prod --aws-profile AWSAdministratorAccess-177080657532"
   },
   "dependencies": {
     "jsonwebtoken": "^7.1.9",

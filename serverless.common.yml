@@ -12,6 +12,9 @@ custom:
   #devSampleApp-SampleStackcognito2E147779-ExtCognitoAuthRole
   sstApp: ${self:custom.sstAppMapping.${self:custom.stage}, self:custom.sstAppMapping.dev}-SampleApp
 
+  # Não pode usar propriedades do CF 
+  # cognitoUserPoolID: !ImportValue ${self:custom.sstApp}-payments-ExtCognitoUserPoolId
+
 lambdaPolicyXRay:
   Effect: Allow
   Action:

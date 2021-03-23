@@ -19,13 +19,19 @@ provider:
   tracing:
     apiGateway: true
     lambda: true
-
+  
+  cognitoUserPoolId: !ImportValue ${self:custom.sstApp}-payments-ExtCognitoUserPoolId
   # These environment variables are made available to our functions
   # under process.env.
   environment:
     stage: ${self:custom.stage}
-    # https://cognito-idp.<user pool id>
-    COGNITO_ENDPOINT: !Sub https://cognito-idp.${AWS::Region}.amazonaws.com/us-east-1_l0AGDjmRT
+    
+    # Combining: Import (old way) + Sub (fashion way)
+    COGNITO_ENDPOINT: 
+      Fn::Join:
+      - "" 
+      - - !Sub https://cognito-idp.${AWS::Region}.amazonaws.com/
+        - !ImportValue ${self:custom.sstApp}-payments-ExtCognitoUserPoolId
     #sstApp: dev-SampleApp-payments
   #   tableName: !ImportValue ${self:custom.sstApp}-payments-ExtTableName
 
